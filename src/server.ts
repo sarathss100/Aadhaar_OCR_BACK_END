@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import app from './app';
 
 const PORT: number = parseInt(process.env.PORT || '5000', 10);

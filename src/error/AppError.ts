@@ -52,8 +52,22 @@ export class ServiceUnavailableError extends AppError {
 }
 
 export function wrapServiceError(error: unknown): Error {
-    if (error instanceof Error) return error;
-    return new Error((error as Error)?.message || 'Unknown service error');
+  // Case: Already an Error instance → return as-is
+  if (error instanceof Error) return error;
+
+  // Case: Array of error messages
+  if (Array.isArray(error)) {
+    return new Error(error.join("; "));
+  }
+
+  // Case: Object with a message field
+  if (typeof error === "object" && error !== null) {
+    const maybeMessage = (error as { message?: string }).message;
+    if (maybeMessage) return new Error(maybeMessage);
+  }
+
+  // Fallback
+  return new Error(String(error) || "Unknown service error");
 }
 
 export function handleControllerError(response: Response, error: unknown): void {

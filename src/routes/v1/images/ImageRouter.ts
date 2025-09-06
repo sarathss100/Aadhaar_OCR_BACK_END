@@ -5,7 +5,7 @@ import upload from "../../../utils/multer";
 const createImageRouter = function(imageController: IImageController): Router {
     const router = Router();
 
-    router.post('/', upload.fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }]), imageController.processImages.bind(imageController));
+    router.post('/', upload.fields([{ name: 'frontSide', maxCount: 1 }, { name: 'backSide', maxCount: 1 }]), imageController.processImages.bind(imageController));
 
     return router;
 };

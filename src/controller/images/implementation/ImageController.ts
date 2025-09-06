@@ -17,14 +17,14 @@ class ImageController implements IImageController {
     async processImages(request: Request, response: Response): Promise<void> {
         try {
             const files = request.files as { [Field: string]: Express.Multer.File[] };
-            if (!files?.front?.length || !files?.back?.length) {
+            if (!files?.frontSide?.length || !files?.backSide?.length) {
                 throw new Error(`Both Aadhaar front and back images are required.`);
             }
 
-            const front = files.front[0];
-            const back = files.back[0];
+            const frontSide = files.frontSide[0];
+            const backSide = files.backSide[0];
 
-            const processedData = await this._imageService.processImages(front, back);
+            const processedData = await this._imageService.processImages(frontSide, backSide);
 
             sendSuccessResponse(response, StatusCodes.OK, SuccessMessages.OPERATION_SUCCESS, { processedData });
         } catch (error) {
