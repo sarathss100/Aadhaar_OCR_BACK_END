@@ -1,3 +1,8 @@
+import { ErrorMessages } from "../constants/errorMessages";
+import { StatusCodes } from "../constants/statusCodes";
+import { sendErrorResponse } from "../utils/responseHandler";
+import { Response } from "express";
+
 // Base error class
 export class AppError extends Error {
     public statusCode: number;
@@ -43,5 +48,18 @@ export class ServiceUnavailableError extends AppError {
     constructor(message: string = 'The service is currently unavailable. Please try again later.', statusCode: number = 503) {
         super(message, statusCode);
         Object.setPrototypeOf(this, ServiceUnavailableError.prototype);
+    }
+}
+
+export function wrapServiceError(error: unknown): Error {
+    if (error instanceof Error) return error;
+    return new Error((error as Error)?.message || 'Unknown service error');
+}
+
+export function handleControllerError(response: Response, error: unknown): void {
+    if (error instanceof AppError) {
+        sendErrorResponse(response, error.statusCode, error.message);
+    } else {
+        sendErrorResponse(response, StatusCodes.INTERNAL_SERVER_ERROR, ErrorMessages.INTERNAL_SERVER_ERROR);
     }
 }
