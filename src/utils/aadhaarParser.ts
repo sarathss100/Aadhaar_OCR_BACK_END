@@ -294,3 +294,20 @@ export function mergeAadhaarDetails(frontResult: IAadhaar, backResult: IAadhaar)
     address: backResult.address || frontResult.address,
   };
 };
+
+export function isAadhaarCard(text: string): boolean {
+  const aadhaarNumberRegex = /\b\d{4}\s?\d{4}\s?\d{4}\b/;
+
+  const aadhaarIndicators = [
+    'government of india',
+    'govt of india',
+    'uidai',
+    'unique identification authority of india',
+    'aadhaar',
+    'भारत सरकार',
+  ];
+
+  const lowerText = text.toLowerCase();
+
+  return aadhaarNumberRegex.test(text) || aadhaarIndicators.some(ind => lowerText.includes(ind));
+}

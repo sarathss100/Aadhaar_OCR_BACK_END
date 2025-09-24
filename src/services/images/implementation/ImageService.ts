@@ -1,5 +1,5 @@
 import { wrapServiceError } from "../../../error/AppError";
-import { extractAadhaarDetails, mergeAadhaarDetails } from "../../../utils/aadhaarParser";
+import { extractAadhaarDetails, isAadhaarCard, mergeAadhaarDetails } from "../../../utils/aadhaarParser";
 import identifySides from "../../../utils/identifySides";
 import extractTextFromImage from "../../../utils/imageOcr";
 import IAadhaar from "../../../utils/interfaces/IAadhaar";
@@ -15,6 +15,10 @@ class ImageService implements IImageService {
                 extractTextFromImage(frontSide.path),
                 extractTextFromImage(backSide.path)
             ]);
+
+            if (!isAadhaarCard(extractedTextFromFrontSide) || !isAadhaarCard(extractedTextFromBackSide)) {
+                throw new Error("Please upload a valid Aadhaar Card Image");
+            }
 
             // Double check which side is which based on content
             const { frontSideText, backSideText } = identifySides(extractedTextFromFrontSide, extractedTextFromBackSide);
